@@ -9,9 +9,11 @@ Selected check log/environment: tradetester/14oct-00check.log and
 tradetester/14oct-environment.txt.
 These records were carried in the 24 October documentation source. That date
 identifies copy provenance only; execution remains the 14 October tarball above.
-The supplied technical copies replace the original workspace and user-R path
-prefixes with <original-workspace> and <original-user-R>. The delivery manifest
-identifies the copies; the execution manifest preserves their source identities.
+The supplied technical copies use neutral placeholders for original workspace
+and user-R paths. The public TradeTesterR copies use <historical-source>,
+<historical-library> and <historical-check-output> for the dated source,
+installation and check directories. The delivery manifest identifies the copies;
+the execution manifest preserves their source identities.
 
 21 October 2026 PortfolioTesteR: original9008 tarball
 d0cf3140f84295213418070b7c9b700b6951489baa30b0d96b9131aabcf978dc.
