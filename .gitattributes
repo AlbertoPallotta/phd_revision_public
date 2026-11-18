@@ -1,0 +1,9 @@
+# Preserve the six identified viva data files byte-for-byte.
+packages/TradeTesterR/inst/extdata/crude_wti_futures.csv -text
+packages/PortfolioTesteR/data/sample_prices_daily.rda -text
+packages/PortfolioTesteR/data/sample_prices_weekly.rda -text
+packages/PortfolioTesteR/data/sample_sp500_sectors.rda -text
+packages/PortfolioTesteR/inst/extdata/sp500_sectors.csv -text
+packages/PortfolioTesteR/inst/extdata/sp500_sectors.rds -text
+archives/*.tar.gz -text
+archives/*.zip -text

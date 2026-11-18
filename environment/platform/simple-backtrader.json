@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "two completed crossover trades",
+      "passed": true
+    },
+    {
+      "check": "one-unit entry and full exit, repeatable",
+      "passed": true
+    },
+    {
+      "check": "flat after reverse crossings",
+      "passed": true
+    },
+    {
+      "check": "entry next observed open",
+      "passed": true
+    },
+    {
+      "check": "reverse exit next observed open",
+      "passed": true
+    },
+    {
+      "check": "default-period flat-price warmup no trade",
+      "passed": true
+    },
+    {
+      "check": "protective gap stop closes full position",
+      "passed": true
+    },
+    {
+      "check": "stop gap fill uses observed open",
+      "passed": true
+    }
+  ],
+  "executions": [
+    {
+      "date": "2020-01-07",
+      "size": 1,
+      "price": 101.0
+    },
+    {
+      "date": "2020-01-09",
+      "size": -1,
+      "price": 99.0
+    },
+    {
+      "date": "2020-01-12",
+      "size": 1,
+      "price": 103.0
+    },
+    {
+      "date": "2020-01-15",
+      "size": -1,
+      "price": 99.0
+    }
+  ],
+  "stop_executions": [
+    {
+      "date": "2020-01-07",
+      "size": 1,
+      "price": 101.0
+    },
+    {
+      "date": "2020-01-08",
+      "size": -1,
+      "price": 98.0
+    }
+  ],
+  "python": "3.13.9",
+  "backtrader": "1.9.78.123",
+  "scope": "Synthetic illustration only; no historical comparison rerun."
+}

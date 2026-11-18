@@ -1,0 +1,16 @@
+Sec.,Strategy or benchmark,First trade,"Total return
+(%)","Final value
+($)","Max. drawdown
+(%)"
+4.5.1,Simple momentum,2017-12-29,12.53,"112,533.54",-15.56
+4.5.2,RSI mean reversion,2018-11-30,7.56,"107,560.87",-12.38
+4.5.3,Sector-relative momentum,2017-07-14,43.94,"143,940.25",-14.75
+4.5.4,Momentum with low-volatility rank weights,2017-12-29,20.32,"120,324.94",-11.14
+4.5.5,Regime-filtered momentum,2017-12-29,6.67,"106,669.40",-19.71
+4.5.6,Momentum–reciprocal-volatility blend,2017-04-21,28.68,"128,677.09",-13.14
+4.5.7,MA-distance mean reversion,2017-05-19,21.04,"121,040.25",-13.45
+4.5.8,Stochastic with adaptive weights,2018-04-20,36.88,"136,881.74",-14.95
+4.5.9,CCI trend following,2018-07-13,2.14,"102,142.31",-25.06
+4.5.10,Stochastic oversold (weekly),2017-04-21,92.45,"192,453.98",-14.57
+—,Equal weight (grouped),2017-01-27,64.89,"164,887.42",-12.14
+—,Equal weight (weekly),2017-01-06,66.33,"166,326.67",-16.40

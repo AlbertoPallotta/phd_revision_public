@@ -1,0 +1,33 @@
+DATED TECHNICAL EVIDENCE — HISTORICAL, NOT NEW SUCCESSOR CHECKS
+
+14 October 2026 TradeTesterR: original tarball
+6bf8b8bd4ff49934046d1214e874ca65e72c1462f0fe779861a62c8da65d749a.
+Saved Windows R4.6.1 check: 0 errors, 0 warnings, 1 development-version incoming
+NOTE, --as-cran --no-manual. The earlier failed/blocked attempts remain historical;
+this does not assert a fresh check of the supplied successor or CRAN acceptance.
+Selected check log/environment: tradetester/14oct-00check.log and
+tradetester/14oct-environment.txt.
+These records were carried in the 24 October documentation source. That date
+identifies copy provenance only; execution remains the 14 October tarball above.
+The supplied technical copies replace the original workspace and user-R path
+prefixes with <original-workspace> and <original-user-R>. The delivery manifest
+identifies the copies; the execution manifest preserves their source identities.
+
+21 October 2026 PortfolioTesteR: original9008 tarball
+d0cf3140f84295213418070b7c9b700b6951489baa30b0d96b9131aabcf978dc.
+Selected identity, synthetic, result-validation, figure-data and figure-review
+CSVs retain their original outcomes. These are not freshly generated gates for
+the supplied24Oct documentation source. Original session/dependency/warning
+records retain their dates and scope. The complete historical study is not run
+again by an installation or CSV plotting check.
+
+22 October 2026 platform checks: original Portfolio comparison reports 18 PASS
+checks on 39 prices/20 symbols with9008 and quantstrat0.25. The separate Python
+Backtrader check reports eight PASS checks with Python3.13.9/backtrader1.9.78.123.
+These are bounded original demonstrations, not matched historical study reruns.
+
+The execution and historical-access manifests carry exact identities. Any new
+build/install/example/plot check has its own date, executable, command, archive
+SHA256, library paths, installed paths, session and outcome. No earlier PASS is
+reassigned. Path-prefix substitutions do not change dates, commands apart from
+those prefixes, software versions, outcomes, warnings or technical qualifications.

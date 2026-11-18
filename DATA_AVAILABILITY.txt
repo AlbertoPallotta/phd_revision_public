@@ -1,0 +1,28 @@
+DATA AVAILABILITY AND EXECUTION ACCESS
+
+The package data allowlist is manifests/library-data.csv: one TradeTesterR file
+(inst/extdata/crude_wti_futures.csv) and five PortfolioTesteR files
+(sample_prices_daily.rda, sample_prices_weekly.rda, sample_sp500_sectors.rda,
+inst/extdata/sp500_sectors.csv, inst/extdata/sp500_sectors.rds). Bytes match their
+identified frozen viva snapshots. No dataset substitution or new research
+database is supplied. These identities describe content, not a new rights claim.
+
+The PortfolioTesteR research database, query extracts, feature/price panels and
+price-containing saved research objects are not distributed. The longer ES file
+and frozen risk-free RDS required by the historical TT study are also not
+distributed. No public acquisition route for these exact inputs is established.
+No promise of automatic recovery from Yahoo, a moving branch, or another data
+file is made. Historical source access is explicitly listed in the access map.
+
+The 42 A1/B3 price CSVs in the local audit are duplicate exports of permitted
+sample inputs. They are excluded as redundant price panels; they are not 42 new
+research datasets or performance summaries. Canonical unchanged package samples
+remain the reference. Saved derived summaries/figures and the two agreed
+transaction-only projections are separate display evidence, not market inputs.
+Figure 3.1's observed price curve and Bollinger bands are reconstructed in memory
+from the permitted TT CSV; no new price excerpt is shipped.
+
+The historical Portfolio models and their execution records retain their stated
+methodological qualifications. Packaging and successful plotting do not establish
+new scientific validity. The inherited missing legacy-pooled-H13/session-info.txt
+record remains an evidence limitation. No missing environment record is invented.

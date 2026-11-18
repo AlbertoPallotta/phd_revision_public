@@ -1,0 +1,109 @@
+INSTALLING THE TWO PACKAGES
+
+A. Install (Windows, macOS or Linux)
+
+Open a fresh R session in the downloaded repository folder, which contains
+INSTALL.txt and archives/. R 4.x is recommended. Install the dependencies,
+then the two supplied packages:
+
+  install.packages(c("data.table", "xts", "zoo", "lubridate", "plotly",
+                     "tidyquant", "quantmod", "htmltools", "TTR"))
+
+  install.packages("archives/TradeTesterR_0.1.2.9001.tar.gz", repos = NULL, type = "source")
+  install.packages("archives/PortfolioTesteR_0.1.4.9008.tar.gz", repos = NULL, type = "source")
+
+  library(TradeTesterR)
+  library(PortfolioTesteR)
+  packageVersion("TradeTesterR")     # 0.1.2.9001
+  packageVersion("PortfolioTesteR")  # 0.1.4.9008
+
+The dependency download needs internet access; the two package archives are
+already in this folder. If you already have the dependencies, you can start
+with the two archive-installation commands.
+
+Start a fresh R session for the first example in either package README.
+For the thesis figures, follow reproduction/README.txt. Section C is an optional
+Windows route for keeping these packages in a separate R library.
+
+B. Check the download (optional)
+
+Compare the archives' SHA-256 values with manifests/delivery-files.csv or the
+Response to examiners. From the repository folder, use one of these:
+
+  R 4.5 or later:
+    tools::sha256sum(list.files("archives", full.names = TRUE))
+
+  Windows PowerShell:
+    Get-FileHash archives\*.tar.gz, archives\*.zip -Algorithm SHA256
+
+  macOS (or another system with shasum):
+    shasum -a 256 archives/*.tar.gz archives/*.zip
+
+  Linux:
+    sha256sum archives/*.tar.gz archives/*.zip
+
+Section C also checks every file in the repository against its manifest.
+
+C. Isolated library and pinned verification
+   (Windows; the route used for the recorded checks)
+
+This is the route used for the checks recorded in
+reproduction/SOFTWARE_PROVENANCE.md, which used Windows R 4.6.1. It verifies
+every file against the manifest before installing into a separate library.
+It is not required to use the packages.
+
+Use PowerShell 7 (pwsh). Replace the example paths with your downloaded folder,
+chosen R library and R executable paths. Choose a new log file outside the
+repository and create its parent directory first.
+
+Before the PowerShell block, install dependencies into that separate library
+from R. Use the same library path here and for $Lib below:
+
+  dir.create("C:/path/to/phd-r-library", recursive = TRUE, showWarnings = FALSE)
+  install.packages(c("data.table", "xts", "zoo", "lubridate", "plotly",
+                     "tidyquant", "quantmod", "htmltools", "TTR"),
+                   lib = "C:/path/to/phd-r-library")
+
+Then run in PowerShell:
+  $Delivery = 'C:/path/to/phd-software'
+  $Lib = 'C:/path/to/phd-r-library'
+  $R = 'C:/path/to/R/bin/R.exe'
+  $Rscript = 'C:/path/to/R/bin/Rscript.exe'
+  # Select a new log path; never overwrite original evidence.
+  $ErrorActionPreference = 'Stop'
+  $taskVerifier = (Get-Command pwsh -CommandType Application -ErrorAction Stop).Source
+  & $taskVerifier -NoProfile -File "$Delivery/checks/verify_delivery.ps1" -Delivery $Delivery -Manifest "$Delivery/manifests/delivery-files.csv" -ExpectedSelection "$Delivery/manifests/expected-delivery-paths.csv" -ExpectedSelectionSHA256 7ad55d20c7585b4337bc9798e36e0383b200310a6b605a55c430852db2b56455 -NewLog 'C:/path/to/new-identity-check.csv'
+  $taskVerifierExit = $LASTEXITCODE
+  if ($null -eq $taskVerifierExit -or $taskVerifierExit -ne 0) { throw 'Verification failed; do not install packages.' }
+  New-Item -ItemType Directory -Path $Lib -Force | Out-Null
+  $env:R_LIBS_USER = $Lib
+  $env:R_LIBS = $Lib
+  $env:R_LIBS_SITE = ''
+  $env:R_ENVIRON_USER = 'NUL'
+  $env:R_PROFILE_USER = 'NUL'
+  & $R CMD INSTALL ('--library=' + $Lib) "$Delivery/archives/TradeTesterR_0.1.2.9001.tar.gz"
+  if ($LASTEXITCODE -ne 0) { throw 'TradeTesterR install failed' }
+  & $R CMD INSTALL ('--library=' + $Lib) "$Delivery/archives/PortfolioTesteR_0.1.4.9008.tar.gz"
+  if ($LASTEXITCODE -ne 0) { throw 'PortfolioTesteR install failed' }
+
+For interactive R, select the same library in each fresh session:
+  .libPaths(c('C:/path/to/phd-r-library', .libPaths()))
+  library(TradeTesterR)
+  library(PortfolioTesteR)
+  .libPaths()
+  find.package(c('TradeTesterR', 'PortfolioTesteR'))
+  sessionInfo()
+
+Command-line runners in this PowerShell session use the same library through
+R_LIBS_USER and R_LIBS. Use the $Rscript path above for the reproduction commands.
+
+D. Notes
+
+- TTR is required by PortfolioTesteR. It is also used by the TradeTesterR README
+  example and guide demonstration, where it is a Suggests dependency.
+- An older install_github() command in the preserved PortfolioTesteR vignettes
+  does not select these supplied archives. Use the installation commands above.
+- Optional ML backends are not needed for the introductory examples. The
+  PortfolioTesteR README explains their requirements and fallback behaviour.
+- How the archives were built is described in
+  reproduction/SOFTWARE_PROVENANCE.md, under "How the archives were built".

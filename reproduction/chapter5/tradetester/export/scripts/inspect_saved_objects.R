@@ -1,0 +1,23 @@
+# Read saved objects only. No source(), fitting, optimisation or backtest calls.
+args <- commandArgs(TRUE)
+if (length(args)!=2L) stop("Missing configuration: supply output folder and historical saved-object directory.",call.=FALSE)
+out <- normalizePath(args[1],winslash="/",mustWork=TRUE)
+root <- normalizePath(args[2],winslash="/",mustWork=TRUE)
+evidence <- file.path(out,"evidence")
+if (dir.exists(evidence) && length(list.files(evidence,all.files=TRUE,no..=TRUE))) stop("Output evidence exists; choose a fresh output folder.")
+dir.create(evidence,showWarnings=FALSE)
+Sys.setenv(TZ="UTC")
+for (kind in c("atr","atr_ktp")) {
+  obj <- readRDS(file.path(root,paste0(kind,"-optimizer.rds")))
+  w <- as.data.frame(obj$windows)
+  w$WindowIndex <- seq_len(nrow(w))
+  for (nm in c("train_start","train_end","test_start","test_end"))
+    w[[nm]] <- format(w[[nm]],tz="UTC",format="%Y-%m-%dT%H:%M:%SZ")
+  write.csv(w,file.path(evidence,paste0(kind,"-windows.csv")),row.names=FALSE)
+  st <- readRDS(file.path(root,paste0(kind,"-stability.rds")))
+  capture.output(str(st,max.level=1),file=file.path(evidence,paste0(kind,"-stability-structure.txt")))
+  if (!is.null(st$stability_metrics)) write.csv(st$stability_metrics,file.path(evidence,paste0(kind,"-stability.csv")),row.names=FALSE)
+  capture.output(str(obj$metric_settings,max.level=1),file=file.path(evidence,paste0(kind,"-metric-settings.txt")))
+  cat(kind,":",length(obj$test_results),"saved test objects;",nrow(w),"windows\n")
+}
+capture.output(sessionInfo(),file=file.path(evidence,"export-session.txt"))

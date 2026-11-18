@@ -1,0 +1,17 @@
+Capability,Status,Boundary
+Data and indicators,Implemented on supplied data,"Price adapters, signals and momentum availability policy; no historical membership or delisting service."
+Selection and grouping,Implemented,"Ranks, filters, Top-N and group operations use supplied classifications; group selection does not guarantee neutral exposure."
+Basic weights,Implemented,"Equal, positive-signal, rank and inverse-volatility modes have distinct input and normalisation rules."
+Volatility targeting,Weight transformation,Default down-only scaling adds cash; no borrowing or margin engine follows from removing the scaling cap.
+Hierarchical risk parity,Implemented with assumptions,Clustering and recursive allocation depend on the covariance sample and lookback.
+Equal risk contribution,Approximation,Iterative updates provide no robust long-only or convergence guarantee.
+Maximum diversification and minimum variance,General optimisers absent,The max_div branch is inverse-volatility weighting and ignores correlations; global minimum-variance optimisation is not supplied.
+Position and exposure controls,Limited,Position counts differ from weight caps; upward normalisation can undo caps.
+Regime handling,Binary and labelled regimes,Binary filtering and configured regime weights are supplied; fractional selection scaling need not survive normalisation.
+Execution and cash,Intended long-only workflow,"Whole shares, cash-constrained purchases and residual cash; unsupported targets are not comprehensively rejected."
+Cash interest and short finance,Not implemented,"Residual cash earns zero; no borrowing, margin or complete short-sale accounting."
+Costs and frictions,Separate cost proxy only,"run_backtest() is gross; pt_collect_results() applies target-weight turnover deductions. No integrated fees, slippage or impact."
+Performance and search,Implemented with assumptions,Metric conventions differ by reporter. Parameter search supplies no built-in multiple-testing correction or performance-decay model.
+Optional ML backends,Backend-dependent,"Tabular ridge, RF and XGBoost use optional packages. Sequence models require usable Keras; the factory announces linear fallback and exposes the actual type."
+ML allocation calendar,No independent holding calendar,Input prediction rows can become allocation opportunities; model step and forecast horizon do not define holdings.
+Cross-package regime overlay,Future extension,A unified layer across TradeTesterR and PortfolioTesteR is not an implemented integration.

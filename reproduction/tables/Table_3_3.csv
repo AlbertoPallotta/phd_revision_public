@@ -1,0 +1,7 @@
+Time,Event,Price,Signed quantity change,Remaining quantity
+"12 Feb 2016
+00:00",Long entry,37.2200,+200,200
+"17 Feb 2016
+23:15",Middle-band target,41.6935,-100,100
+"21 Feb 2016
+23:15",Dynamic stop,39.1264,-100,0

@@ -1,0 +1,35 @@
+PORTFOLIOTESTER THESIS EXAMPLES A1 AND B3 - 21 OCTOBER 2026
+
+Canonical recipe files (source them into a new environment):
+  examples/thesis_multifactor_A1.R: thesis_multifactor_a1() runs one example.
+  reproducibility/thesis_recipes_B3.R: builder and fixed study configuration.
+Find these installed paths with system.file(..., package="PortfolioTesteR").
+The standalone A1 file can also be run with Rscript after package installation.
+
+The chapter4/A1-B3 companion includes the selected saved figures/summary CSVs,
+original study code for inspection and an explicitly separate CSV plotting
+adapter. The original run_study.R requires fresh original identity/synthetic
+checks and the 9007 baseline in its historical workspace. Those prerequisites
+have not been removed or satisfied by copying old PASS files. It is not a
+download-only command. The adapter validates selected saved plotting CSVs and
+does not run a strategy or use a price-containing result object.
+Historical A1/B3 execution: original 21 October 0.1.4.9008 archive, separately
+identified in manifests/execution-identities.csv. No new study is implied.
+
+A1 uses unchanged daily/weekly samples, 39 grouped four-week dates, momentum12,
+daily population-SD60, Top5 OR Top5, and 60/40 positive-momentum/reciprocal-sigma
+weights over the union. Volatility must be finite and positive. An empty leg
+leaves 100% target budget for the other; two empty legs leave cash.
+
+B3 full sample: L=8,12,16,20; N=5,10,15 (12 evaluations).
+B3 WF: L=8,12,26; N=5,10; IS52/OOS26/step26; four windows (24 IS + 4 OOS).
+Propagate momentum in both. IS startup cash is scored. OOS receives a preceding
+26-row IS tail for indicators. Each OOS account resets to100000; stitching
+compounds only within-leg intervals, not continuous holdings across boundaries.
+Same-row supplied prices, whole shares, residual zero-interest cash, gross/no
+costs/no stops. A1 + B3 = 41 evaluations. No tuning or historical equivalence
+claim. Saved older results retain their original execution versions.
+
+Known stale calls in the DIFFERENT scripts
+example_multi_factor.R and example_risk_parity.R have not been validated as
+runnable examples. Historical-source and external-input access limitations remain in the access map.

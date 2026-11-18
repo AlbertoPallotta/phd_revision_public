@@ -1,0 +1,5 @@
+Framework,Strategy representation,Inspection route
+TradeStation,"EasyLanguage order statements specify direction, quantity and execution method.","Named entries and exits, with orders identified in charts and the Strategy Performance Report."
+Backtrader,"Python Strategy objects define indicators, trading methods and event callbacks.",Order-status notifications and order objects containing creation and execution information.
+quantstrat,"R strategy definitions separate indicators, signals and rules within a portfolio-modelling framework.","Indicator and signal calculations, with portfolio results in associated R objects."
+TradeTesterR,"Prepared table columns specify indicators, signals and orders; functions prepare and evaluate them.","Prepared inputs, the instruction audit and the exit ledger, under the scope in Table 3.1."

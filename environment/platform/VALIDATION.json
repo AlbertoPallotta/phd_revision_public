@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "checks": 18,
+  "prices": 39,
+  "symbols": 20,
+  "package": "0.1.4.9008",
+  "quantstrat": "0.25",
+  "scope": "Two bundled-data illustration checks, each with two accounting representations. No historical research-study rerun or matched-output claim."
+}

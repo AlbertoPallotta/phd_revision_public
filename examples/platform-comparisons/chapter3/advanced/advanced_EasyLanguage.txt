@@ -1,0 +1,24 @@
+{ Four-contract illustration; instrument BigPointValue must be 50.
+  Documentation-checked; not compiled or executed in TradeStation here.
+  Bands use Close; profit conditions submit next-bar MARKET orders.
+  The initial position budget is 2000, allocated as 500 per contract.
+  This preserves the per-contract stop distance when two contracts remain. }
+Inputs: BBLength(20), RSILength(14), RSIOverSold(30),
+        InitialContracts(4), InitialStopBudget(2000), MaxBarsHeld(10);
+Variables: UpperBB(0), MiddleBB(0), LowerBB(0), RSIValue(0);
+UpperBB = BollingerBand(Close, BBLength, 2);
+MiddleBB = AverageFC(Close, BBLength);
+LowerBB = BollingerBand(Close, BBLength, -2);
+RSIValue = RSI(Close, RSILength);
+SetStopContract;
+SetStopLoss(InitialStopBudget / InitialContracts);
+If MarketPosition = 0 and RSIValue < RSIOverSold and Close <= LowerBB then
+    Buy InitialContracts contracts next bar at LowerBB limit;
+If MarketPosition > 0 then begin
+    If BarsSinceEntry >= MaxBarsHeld - 1 then
+        Sell ("Time") next bar at market
+    Else If Close >= UpperBB then
+        Sell ("Upper") next bar at market
+    Else If CurrentContracts = InitialContracts and Close >= MiddleBB then
+        Sell ("Middle") InitialContracts/2 contracts total next bar at market;
+End;

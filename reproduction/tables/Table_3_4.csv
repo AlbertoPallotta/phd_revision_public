@@ -1,0 +1,6 @@
+Measure,In sample,Out of sample
+Window pairs,17,17
+Scheduled calendar days per window,364,182
+Mean P&L per window,"1,381.39",38.22
+Mean P&L per scheduled day,3.795,0.210
+Windows with positive P&L,15 / 17,7 / 17

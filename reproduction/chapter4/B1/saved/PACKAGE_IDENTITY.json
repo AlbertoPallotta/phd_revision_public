@@ -1,0 +1,9 @@
+{
+  "version": "0.1.4.9006",
+  "tarball_sha256": "b54d3b29ffac7a1af28787c2fa2bd848065e5a74770e3a9b46a57037b61b0710",
+  "source_files": 211,
+  "changed_files": 8,
+  "public_commit": null,
+  "publication": "local only; not submitted",
+  "implementation": "opt-in momentum availability; default preserved"
+}

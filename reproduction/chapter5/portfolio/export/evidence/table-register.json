@@ -1,0 +1,339 @@
+{
+  "full": {
+    "number": "5.1",
+    "caption": "Table 5.1. Full-period gross performance by prediction horizon and modelling specification.",
+    "headers": [
+      "Specification",
+      "Horizon\n(weeks)",
+      "Total\nreturn (%)",
+      "Annual\nreturn (%)",
+      "Annual\nvol. (%)",
+      "Return/vol.\nratio",
+      "Max.\ndrawdown (%)"
+    ],
+    "widths": [
+      2.8,
+      1.85,
+      2.25,
+      2.25,
+      2.15,
+      2.2,
+      2.6
+    ],
+    "rows": [
+      [
+        "Pooled",
+        "1",
+        "255.50",
+        "13.47",
+        "19.27",
+        "0.699",
+        "-33.36"
+      ],
+      [
+        "Sector-based",
+        "1",
+        "299.52",
+        "14.80",
+        "17.82",
+        "0.830",
+        "-30.05"
+      ],
+      [
+        "Pooled",
+        "4",
+        "552.16",
+        "20.54",
+        "19.99",
+        "1.028",
+        "-32.65"
+      ],
+      [
+        "Sector-based",
+        "4",
+        "748.25",
+        "23.74",
+        "18.68",
+        "1.271",
+        "-33.97"
+      ],
+      [
+        "Pooled",
+        "13",
+        "754.45",
+        "23.83",
+        "20.60",
+        "1.157",
+        "-33.68"
+      ],
+      [
+        "Sector-based",
+        "13",
+        "784.81",
+        "24.26",
+        "18.41",
+        "1.318",
+        "-31.24"
+      ]
+    ],
+    "source_rows": [
+      {
+        "total_return": "2.55501024198532",
+        "ann_return": "0.134679047632251",
+        "ann_vol": "0.192651294772536",
+        "sharpe": "0.699081974981102",
+        "max_drawdown": "-0.333642365268794",
+        "regime": "pooled",
+        "horizon": "1",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.519425547123955"
+      },
+      {
+        "total_return": "2.99520527017594",
+        "ann_return": "0.147951222912968",
+        "ann_vol": "0.178229016080954",
+        "sharpe": "0.830118609002293",
+        "max_drawdown": "-0.300509315164379",
+        "regime": "per_group",
+        "horizon": "1",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.584747788822989"
+      },
+      {
+        "total_return": "5.52160256280897",
+        "ann_return": "0.20537844144109",
+        "ann_vol": "0.199879862203001",
+        "sharpe": "1.0275094207965",
+        "max_drawdown": "-0.326451083952598",
+        "regime": "pooled",
+        "horizon": "4",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.452729498266943"
+      },
+      {
+        "total_return": "7.48252415518761",
+        "ann_return": "0.237361940932024",
+        "ann_vol": "0.18680194634424",
+        "sharpe": "1.27066096246455",
+        "max_drawdown": "-0.33965969622811",
+        "regime": "per_group",
+        "horizon": "4",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.518327212904408"
+      },
+      {
+        "total_return": "7.54450812291145",
+        "ann_return": "0.238259699221601",
+        "ann_vol": "0.206015209884401",
+        "sharpe": "1.15651509107164",
+        "max_drawdown": "-0.336790752216978",
+        "regime": "pooled",
+        "horizon": "13",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.397987586838838"
+      },
+      {
+        "total_return": "7.84808944757462",
+        "ann_return": "0.242573744754489",
+        "ann_vol": "0.184090378406314",
+        "sharpe": "1.31768833794829",
+        "max_drawdown": "-0.312410488680597",
+        "regime": "per_group",
+        "horizon": "13",
+        "Slice": "Full",
+        "n_weeks": "522",
+        "avg_turnover": "0.465951982502684"
+      }
+    ]
+  },
+  "subperiod": {
+    "number": "5.2",
+    "caption": "Table 5.2. Gross performance at the thirteen-week horizon before and after 1 January 2020.",
+    "headers": [
+      "Period",
+      "Specification",
+      "Annual\nreturn (%)",
+      "Annual\nvol. (%)",
+      "Return/vol.\nratio",
+      "Max.\ndrawdown (%)"
+    ],
+    "widths": [
+      1.5,
+      3.2,
+      2.8,
+      2.8,
+      2.8,
+      3.0
+    ],
+    "rows": [
+      [
+        "Pre",
+        "Pooled",
+        "17.97",
+        "12.01",
+        "1.497",
+        "-20.43"
+      ],
+      [
+        "Pre",
+        "Sector-based",
+        "17.90",
+        "11.18",
+        "1.602",
+        "-19.29"
+      ],
+      [
+        "Post",
+        "Pooled",
+        "33.14",
+        "29.05",
+        "1.141",
+        "-33.68"
+      ],
+      [
+        "Post",
+        "Sector-based",
+        "34.42",
+        "25.66",
+        "1.341",
+        "-31.24"
+      ]
+    ],
+    "source_rows": [
+      {
+        "total_return": "1.70397915633202",
+        "ann_return": "0.179697130012491",
+        "ann_vol": "0.120076687698919",
+        "sharpe": "1.49651971132868",
+        "max_drawdown": "-0.204309888526863",
+        "regime": "pooled",
+        "horizon": "13",
+        "Slice": "Pre",
+        "n_weeks": "313",
+        "avg_turnover": "0.422630186667261"
+      },
+      {
+        "total_return": "1.69493391054153",
+        "ann_return": "0.179040602253052",
+        "ann_vol": "0.111754426228941",
+        "sharpe": "1.60208958423058",
+        "max_drawdown": "-0.192881366357555",
+        "regime": "per_group",
+        "horizon": "13",
+        "Slice": "Pre",
+        "n_weeks": "313",
+        "avg_turnover": "0.471057582365668"
+      },
+      {
+        "total_return": "2.15997558742361",
+        "ann_return": "0.33144497844001",
+        "ann_vol": "0.290518120986999",
+        "sharpe": "1.14087540327594",
+        "max_drawdown": "-0.336790752216978",
+        "regime": "pooled",
+        "horizon": "13",
+        "Slice": "Post",
+        "n_weeks": "209",
+        "avg_turnover": "0.379297305809551"
+      },
+      {
+        "total_return": "2.28323058794293",
+        "ann_return": "0.344181026467892",
+        "ann_vol": "0.256638311620401",
+        "sharpe": "1.34111319660245",
+        "max_drawdown": "-0.312410488680597",
+        "regime": "per_group",
+        "horizon": "13",
+        "Slice": "Post",
+        "n_weeks": "209",
+        "avg_turnover": "0.46207961932158"
+      }
+    ]
+  },
+  "cost": {
+    "number": "5.3",
+    "caption": "Table 5.3. Cost-adjusted performance for sector-based H13 under selected target-turnover charges.",
+    "headers": [
+      "Charge\n(bps)",
+      "Total\nreturn (%)",
+      "Annual\nreturn (%)",
+      "Annual\nvol. (%)",
+      "Return/vol.\nratio",
+      "Max.\ndrawdown (%)"
+    ],
+    "widths": [
+      2.0,
+      2.6,
+      2.7,
+      2.7,
+      2.8,
+      3.3
+    ],
+    "rows": [
+      [
+        "5",
+        "713.16",
+        "23.22",
+        "18.40",
+        "1.261",
+        "-31.35"
+      ],
+      [
+        "20",
+        "531.12",
+        "20.14",
+        "18.40",
+        "1.095",
+        "-31.68"
+      ],
+      [
+        "50",
+        "279.95",
+        "14.22",
+        "18.39",
+        "0.774",
+        "-32.34"
+      ]
+    ],
+    "source_rows": [
+      {
+        "total_return": "7.13163694991614",
+        "ann_return": "0.232165574505942",
+        "ann_vol": "0.184049881556172",
+        "sharpe": "1.2614274594634",
+        "max_drawdown": "-0.313516538106806",
+        "regime": "per_group",
+        "horizon": "13",
+        "Cost_bps": "5",
+        "Net": "TRUE"
+      },
+      {
+        "total_return": "5.31116512042307",
+        "ann_return": "0.201446395760599",
+        "ann_vol": "0.183951115701097",
+        "sharpe": "1.09510831175349",
+        "max_drawdown": "-0.316826220093798",
+        "regime": "per_group",
+        "horizon": "13",
+        "Cost_bps": "20",
+        "Net": "TRUE"
+      },
+      {
+        "total_return": "2.79952978320647",
+        "ann_return": "0.142222909660222",
+        "ann_vol": "0.183856001900402",
+        "sharpe": "0.7735559796262",
+        "max_drawdown": "-0.323407606322303",
+        "regime": "per_group",
+        "horizon": "13",
+        "Cost_bps": "50",
+        "Net": "TRUE"
+      }
+    ]
+  }
+}

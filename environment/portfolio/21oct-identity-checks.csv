@@ -1,0 +1,9 @@
+check,status,detail
+"all_18_parsed_R_files_identical","PASSED",""
+"namespace_bytes_unchanged","PASSED",""
+"installed_all_function_definitions","PASSED","210 functions"
+"installed_recipe_thesis_multifactor_A1.R","PASSED",""
+"installed_recipe_thesis_recipes_B3.R","PASSED",""
+"data_sample_prices_daily.rda","PASSED",""
+"data_sample_prices_weekly.rda","PASSED",""
+"data_sample_sp500_sectors.rda","PASSED",""

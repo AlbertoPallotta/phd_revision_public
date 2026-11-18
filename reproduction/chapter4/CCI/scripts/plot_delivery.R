@@ -1,0 +1,36 @@
+# Delivery support.
+# Re-export Figure 4.3 from unchanged saved CSV only. No package or strategy calls.
+# Plotting statements reproduce the frozen render_candidates.R C4-45-09 branch.
+args <- commandArgs(trailingOnly=TRUE)
+stopifnot(length(args)==2L)
+input <- normalizePath(args[1],winslash="/",mustWork=TRUE)
+out <- args[2];stopifnot(!dir.exists(out));dir.create(out,recursive=TRUE)
+for(d in c("qa","figures","evidence"))dir.create(file.path(out,d))
+before <- unname(tools::md5sum(input))
+df <- read.csv(input,check.names=FALSE)
+df$Date <- as.Date(df$Date)
+stopifnot(nrow(df)==737L, min(df$Date)==as.Date("2017-01-27"), max(df$Date)==as.Date("2019-12-31"))
+stopifnot(all(is.finite(df$portfolio_value)),all(is.finite(df$drawdown_pct)),all(is.finite(df$cumulative_return_pct)))
+title <- "4.5.9  CCI trend following"
+figfun <- function(footer) {
+  par(mfrow=c(2,2),mar=c(4.4,6.7,2.4,1.2),oma=c(2.5,0,3.2,0),las=1,cex.axis=.85)
+  plot(df$Date,df$portfolio_value,type="l",col="#194C72",lwd=2,main="Daily portfolio value",xlab="Date",ylab="");mtext("Portfolio value ($)",side=2,line=4.8,las=0);grid()
+  plot(df$Date,df$drawdown_pct,type="l",col="#A6423A",lwd=2,main="Daily drawdown",xlab="Date",ylab="");mtext("Drawdown (%)",side=2,line=4.8,las=0);grid();abline(h=0,lty=3)
+  plot(df$Date,df$rolling_vol_30d_pct,type="l",col="#2F6D55",lwd=2,main="30-day rolling volatility",xlab="Date",ylab="");mtext("Annualised volatility (%)",side=2,line=4.8,las=0);grid()
+  plot(df$Date,df$cumulative_return_pct,type="l",col="#194C72",lwd=2,main="Portfolio cumulative return",xlab="Date",ylab="");mtext("Return (%)",side=2,line=4.8,las=0);grid()
+  mtext(title,outer=TRUE,side=3,line=1.7,font=2,cex=1.25)
+  mtext("Daily monitoring; decisions on the unchanged grouped grid",outer=TRUE,side=3,line=.35,cex=.85)
+  mtext(footer,outer=TRUE,side=1,line=.6,cex=.8)
+}
+png(file.path(out,"qa/Figure4_3_control.png"),width=2000,height=1400,res=200,type="cairo")
+figfun("Gross returns. Portfolio-only display; original benchmark overlay withheld.")
+invisible(dev.off())
+png(file.path(out,"figures/Figure4_3.png"),width=2000,height=1400,res=200,type="cairo")
+figfun("Gross returns; portfolio-only display.")
+invisible(dev.off())
+pdf(file.path(out,"figures/Figure4_3.pdf"),width=10,height=7,family="Helvetica",useDingbats=FALSE)
+figfun("Gross returns; portfolio-only display.")
+invisible(dev.off())
+stopifnot(identical(before,unname(tools::md5sum(input))))
+capture.output(sessionInfo(),file=file.path(out,"evidence/figure-session-info.txt"))
+cat("Read and plotted 737 saved rows. No strategy, model, package or research computation was run.\n")

@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^reproducibility$
+^GUIDE\.md$
+^CONTRIBUTING\.md$
+^cran-comments\.md$
+
+^LICENSE$

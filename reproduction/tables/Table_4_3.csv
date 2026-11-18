@@ -1,0 +1,6 @@
+Package,Principal role in this comparison,Main objects or decisions
+PortfolioTesteR,Cross-sectional portfolio construction and backtesting,"Signals, selections, targets and holdings"
+quantstrat,Rule-based strategy simulation,"Indicators, signals, rules and transaction state"
+quantmod,Financial data and modelling tools,"Market series, models and charts"
+PortfolioAnalytics,Portfolio optimisation,"Objectives, constraints and allocations"
+PerformanceAnalytics,Performance and risk analysis,Return series and diagnostic measures

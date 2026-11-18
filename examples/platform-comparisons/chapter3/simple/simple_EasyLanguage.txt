@@ -1,0 +1,13 @@
+{ One share; multiplier one. Native platform configuration is required.
+  Documentation-checked illustration; not compiled or executed here. }
+Inputs: FastLength(20), SlowLength(50), StopLossPct(2);
+Variables: FastMA(0), SlowMA(0);
+FastMA = Average(Close, FastLength);
+SlowMA = Average(Close, SlowLength);
+If MarketPosition = 0 and FastMA crosses above SlowMA then
+    Buy 1 share next bar at market;
+If MarketPosition > 0 then begin
+    SetStopPosition;
+    SetStopLoss(StopLossPct * EntryPrice / 100);
+    If FastMA crosses below SlowMA then Sell next bar at market;
+End;

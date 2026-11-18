@@ -1,0 +1,11 @@
+// EasyLanguage example
+Inputs: FastLen(50), SlowLen(200);
+Vars: FastMA(0), SlowMA(0);
+
+FastMA = Average(Close, FastLen);
+SlowMA = Average(Close, SlowLen);
+
+If FastMA crosses above SlowMA then 
+    Buy next bar at market;
+If FastMA crosses below SlowMA then 
+    Sell next bar at market;

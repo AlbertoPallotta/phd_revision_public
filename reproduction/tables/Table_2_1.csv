@@ -1,0 +1,11 @@
+Tool or environment,Strategy representation,Useful inspection points,Assumptions to specify
+quantstrat,"Indicators, signals and order rules","Signal series; order, portfolio and account records","Sizing, rule timing and accounting setup"
+Backtrader,Strategy class and event callbacks,Indicators; order and trade notifications,"Fill settings, quantity and costs"
+PyAlgoTrade 0.20,Bar callbacks and position objects,Entry/exit orders; position lifecycle,Broker settings and completion handling
+Zipline / Reloaded,"Context, callbacks and historical queries",Recorded series; performance and transactions,"Bundle, calendar and execution models"
+Backtesting.py,Single-instrument Strategy subclass,"Indicators, trades and equity statistics","Spread, commission and order timing"
+bt,Algorithm sequence and strategy tree,"Target weights, positions and transactions","Decision dates, cash and commissions"
+vectorbt,Broadcast signals or order arrays,"Orders, balances and portfolio statistics","Accumulation, costs and signal timing"
+TradeStation / MultiCharts,Trading-language rules; MultiCharts also offers .NET,"Signals, positions and strategy reports","Bar interval, order and platform settings"
+MetaTrader 5 / NinjaTrader,Expert Advisors / NinjaScript strategies,"Test reports, transactions and logs",Testing mode and historical fill assumptions
+LEAN / QuantConnect,Event-driven engine with configurable models,"Orders, holdings and result records","Model settings, data and local/hosted setup"

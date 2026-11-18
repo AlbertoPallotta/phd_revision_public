@@ -1,0 +1,266 @@
+#' Analyze backtest performance (trade-level + time-series)
+#'
+#' @description
+#' Computes descriptive performance metrics using the equity curve when available
+#' (preferred for Sharpe/Sortino, CAGR, drawdowns), and complements them with
+#' trade-level metrics (profit factor, win rate, expectancy, etc.).
+#'
+#' @param bt A backtest object. Expected components:
+#'   \itemize{
+#'     \item \code{$equity_curve} (optional): data.frame/data.table with a date/time column and an \code{Equity} column.
+#'     \item \code{$results}: data.frame/data.table of completed trades with \code{EntryTime}, \code{ExitTime}, \code{Returns} (P\&L in currency).
+#'   }
+#' @param initial_equity Numeric. Starting capital (default \code{10000}).
+#' @param risk_free Either \emph{NULL} (assume 0), a single annualized numeric rate
+#'   (e.g. \code{0.03} = 3\%), or a data.frame/data.table with columns
+#'   \code{date} (or \code{Date}) and \code{rate} (or \code{adjusted}) as daily values
+#'   in decimal or percent (the function auto-scales if \code{>1}).
+#' @param scale Number of observations per year for annualization (default \code{365}).
+#' @param start,end Optional \code{Date} (or character coercible) to restrict analysis window.
+#' @param min_days_for_cagr Integer or NULL. If set (e.g. 180L), hide CAGR when the sample has fewer than this many trading days.
+#'
+#' @return A \code{data.table} with both trade-level and time-series metrics:
+#' \itemize{
+#'   \item \strong{Trade-level:} total_pnl, n_trades (one per trade; partial-exit
+#'         legs aggregate to a single trade), win_rate, profit_factor, avg_win,
+#'         avg_loss, expectancy, max_trade_dd (P\&L path on trade closes),
+#'         win_loss_ratio.
+#'   \item \strong{Time-series:} cagr, ann_vol, sharpe, sortino, max_dd, max_dd_pct, ulcer_index.
+#'   \item \strong{Diagnostic:} nonpositive_equity, appended after the legacy metric columns.
+#' }
+#'
+#' @details
+#' Time-series metrics use \code{$equity_curve} if present; otherwise a step-wise
+#' equity is built from summed P\&L at each \code{as.Date(ExitTime)}. In either
+#' case the curve is padded onto a calendar-day grid (including weekends) before daily
+#' returns, period length and annualized statistics are computed.
+#' Unknown trade returns raise an error rather than being treated as zero.
+#' When equity reaches zero or becomes negative, CAGR, volatility, Sharpe and
+#' Sortino are returned as NA; cash P&L and drawdowns remain available. This is
+#' not a margin or liquidation model.
+#' This approximation ignores mark-to-market between trade dates; use a true daily
+#' curve for precise risk metrics.
+#'
+#' @examples
+#' if (requireNamespace("TTR", quietly = TRUE)) {
+#'   demo <- new.env(parent = globalenv())
+#'   sys.source(system.file("examples", "csv_demo_setup.R",
+#'                          package = "TradeTesterR", mustWork = TRUE), envir = demo)
+#'   ex <- demo$ex
+#'   bt <- backtest(ex$dat, exit_fun = exit_TP_SL_signal, AddToPosition = FALSE,
+#'                  CloseTradeOnOppositeSignal = FALSE, verbose = FALSE)
+#'   analyze_performance(bt, initial_equity = 10000)
+#' }
+#'
+#' @import data.table
+#' @export
+analyze_performance <- function(bt,
+                                initial_equity = 10000,
+                                risk_free = NULL,       # NULL, scalar annual rate (e.g. 0.03), or daily df with date+rate
+                                scale = 365L,          # calendar days per year
+                                start = NULL,
+                                end   = NULL,
+                                min_days_for_cagr = NULL  # e.g. 180L to suppress CAGR on short samples; NULL = always compute
+) {
+  stopifnot(is.list(bt))
+  if (!("results" %in% names(bt))) stop("bt$results not found.")
+  res <- data.table::copy(data.table::as.data.table(bt$results))
+  if (!all(c("Returns", "ExitTime") %in% names(res))) {
+    stop("bt$results must have at least 'Returns' and 'ExitTime'.")
+  }
+
+  # --- window trades (optional) ---
+  to_date <- function(x) as.Date(x)
+  if (!is.null(start)) { start <- to_date(start); res <- res[as.Date(ExitTime) >= start] }
+  if (!is.null(end))   { end   <- to_date(end);   res <- res[as.Date(ExitTime) <= end] }
+  if (nrow(res) == 0) stop("No trades in the selected window.")
+
+  if (any(!is.finite(res$Returns)) || anyNA(res$ExitTime))
+    stop("Performance is undefined for unknown/nonfinite trade returns or exit times. Resolve the execution policy first.")
+  if (!is.finite(initial_equity) || length(initial_equity) != 1L || initial_equity <= 0)
+    stop("initial_equity must be one positive finite value.")
+
+  # ---------- Trade-level metrics ----------
+  # One row per trade: partial-exit legs aggregate to a single trade whose
+  # result is the sum of its legs.
+  if ("Order_ID" %in% names(res)) {
+    tr <- res[, .(Ret = sum(Returns, na.rm = TRUE),
+                  ExitTime = max(ExitTime)), by = Order_ID]
+  } else {
+    tr <- res[, .(Ret = Returns, ExitTime)]
+  }
+
+  total_pnl   <- sum(tr$Ret, na.rm = TRUE)
+  n_trades    <- nrow(tr)
+  n_wins      <- tr[Ret > 0, .N]
+  n_losses    <- tr[Ret < 0, .N]
+  win_rate    <- if (n_trades > 0) 100 * n_wins / n_trades else NA_real_
+
+  wins_sum      <- tr[Ret > 0, sum(Ret)]
+  losses_sum    <- abs(tr[Ret < 0, sum(Ret)])
+  profit_factor <- if (isTRUE(losses_sum > 0)) wins_sum / losses_sum else Inf
+
+  avg_win        <- if (n_wins   > 0) tr[Ret > 0, mean(Ret)] else 0
+  avg_loss       <- if (n_losses > 0) tr[Ret < 0, mean(Ret)] else 0
+  win_loss_ratio <- if (avg_loss != 0) abs(avg_win / avg_loss) else NA_real_
+  expectancy     <- (n_wins/n_trades) * avg_win + (n_losses/n_trades) * avg_loss
+
+  # Trade-close equity path (quick DD on trade closes)
+  data.table::setorder(tr, ExitTime)
+  tr[, Equity_tc := initial_equity + cumsum(Ret)]
+  tr[, Peak_tc   := cummax(pmax(initial_equity, Equity_tc))]
+  tr[, DD_tc     := Equity_tc / Peak_tc - 1]
+  max_trade_dd   <- min(tr$DD_tc, na.rm = TRUE)
+
+  # ---------- Equity curve for time-series metrics ----------
+  if ("equity_curve" %in% names(bt) && !is.null(bt$equity_curve)) {
+    ec <- data.table::copy(data.table::as.data.table(bt$equity_curve))
+    date_col <- names(ec)[which.max(grepl("date|time|day", names(ec), ignore.case = TRUE))]
+    eq_col   <- names(ec)[which.max(grepl("equity|nav|value", names(ec), ignore.case = TRUE))]
+    if (!length(date_col) || !length(eq_col)) stop("equity_curve must have date/time and equity columns.")
+    eq <- ec[, .(Day = as.Date(get(date_col)), Equity = as.numeric(get(eq_col)))]
+  } else {
+    daily_pnl <- res[, .(DailyPnL = sum(Returns, na.rm = TRUE)), by = .(Day = as.Date(ExitTime))]
+    daily_pnl <- daily_pnl[!is.na(Day)]
+    data.table::setorder(daily_pnl, Day)
+    eq <- daily_pnl[, .(Day, Equity = initial_equity + cumsum(DailyPnL))]
+  }
+
+  # sanitize & window equity, then sort
+  eq <- eq[!is.na(Day) & is.finite(Equity)]
+  if (!is.null(start)) eq <- eq[Day >= start]
+  if (!is.null(end))   eq <- eq[Day <= end]
+  data.table::setorder(eq, Day)
+
+  # pad to daily grid (ensures proper daily returns/annualization)
+  if (nrow(eq) >= 1L) {
+    grid_start <- if (is.null(start)) min(eq$Day) else start
+    grid_end <- if (is.null(end)) max(eq$Day) else end
+    all_days <- data.table::data.table(Day = seq(grid_start, grid_end, by = "day"))
+    eq <- eq[all_days, on = "Day"]                       # keep every calendar day
+    eq[, Equity := data.table::nafill(Equity, "locf")]
+    eq[is.na(Equity), Equity := initial_equity]
+    # Keep weekend observations: futures can realise P&L on Sundays. Annualisation
+    # uses the caller's scale; use 365 for this calendar-day realised-P&L grid.
+  }
+
+  nonpositive_equity <- any(eq$Equity <= 0)
+  if (nrow(eq) < 1L) {
+    period_days  <- 0L
+    period_years <- 0
+    total_return <- NA_real_
+    cagr <- ann_vol <- sharpe <- sortino <- max_dd <- max_dd_pct <- ulcer <- NA_real_
+  } else {
+    # Daily returns
+    eq[, Lag := data.table::shift(Equity, fill = initial_equity)]
+    eq[, Ret := (Equity / Lag) - 1]
+
+    # Risk-free to daily Rf_d
+    if (is.null(risk_free)) {
+      eq[, Rf_d := 0]
+    } else if (is.numeric(risk_free) && length(risk_free) == 1L) {
+      eq[, Rf_d := risk_free / scale]
+    } else {
+      rf <- data.table::copy(data.table::as.data.table(risk_free))
+      dcol <- names(rf)[which.max(grepl("^date$|^Date$", names(rf)))]
+      rcol <- names(rf)[which.max(grepl("rate|adjusted|rf", names(rf), ignore.case = TRUE))]
+      if (!length(dcol) || !length(rcol)) stop("risk_free must have 'date' and 'rate/adjusted' columns.")
+      rf[, Day := as.Date(get(dcol))]
+      rf[, Rf_d := as.numeric(get(rcol))]
+      if (any(abs(rf$Rf_d) > 1, na.rm = TRUE)) rf[, Rf_d := Rf_d / 100]   # percent -> decimal
+      rf[, Rf_d := Rf_d / scale]              # annual -> daily
+      eq <- rf[, .(Day, Rf_d)][eq, on = "Day"]
+      eq[is.na(Rf_d), Rf_d := 0]
+    }
+
+    # Excess returns
+    eq[, Excess := Ret - Rf_d]
+
+    # Period length & total return
+    period_days  <- nrow(eq)                  # calendar days on the padded grid
+    period_years <- period_days / scale
+    gross        <- prod(1 + eq$Ret, na.rm = TRUE)
+    total_return <- tail(eq$Equity,1)/initial_equity - 1
+
+    # CAGR via trading days; optionally suppress for short samples
+    cagr <- if (!is.null(min_days_for_cagr) && period_days < min_days_for_cagr) {
+      NA_real_
+    } else if (is.finite(gross) && gross > 0 && period_days > 0) {
+      gross^(scale / period_days) - 1
+    } else NA_real_
+
+    # Vol / Sharpe / Sortino
+    mu   <- mean(eq$Excess, na.rm = TRUE)
+    sd_  <- stats::sd(eq$Excess, na.rm = TRUE)
+    ddn  <- pmin(eq$Excess, 0)
+    sdn  <- sqrt(mean(ddn^2, na.rm = TRUE))
+    ann_vol <- if (is.finite(sd_) && sd_ > 0) sd_ * sqrt(scale) else NA_real_
+    sharpe  <- if (is.finite(sd_) && sd_ > 0) (mu * scale) / (sd_ * sqrt(scale)) else NA_real_
+    sortino <- if (is.finite(sdn) && sdn > 0) (mu * scale) / (sdn * sqrt(scale)) else NA_real_
+    if (nonpositive_equity) cagr <- ann_vol <- sharpe <- sortino <- NA_real_
+
+    # Drawdowns & Ulcer
+    eq[, Peak := cummax(pmax(initial_equity, Equity))]
+    eq[, DD   := Equity / Peak - 1]
+    max_dd     <- suppressWarnings(min(eq$DD, na.rm = TRUE))
+    max_dd_pct <- 100 * max_dd
+    ulcer      <- sqrt(mean((100 * pmin(0, eq$DD))^2))
+  }
+
+  data.table::data.table(
+    total_pnl      = total_pnl,
+    n_trades       = n_trades,
+    win_rate       = win_rate,
+    profit_factor  = profit_factor,
+    avg_win        = avg_win,
+    avg_loss       = avg_loss,
+    win_loss_ratio = win_loss_ratio,
+    expectancy     = expectancy,
+    max_trade_dd   = max_trade_dd,
+    period_days    = period_days,
+    period_years   = period_years,
+    total_return   = total_return,
+    cagr           = cagr,
+    ann_vol        = ann_vol,
+    sharpe         = sharpe,
+    sortino        = sortino,
+    max_dd         = max_dd,
+    max_dd_pct     = max_dd_pct,
+    ulcer_index    = ulcer,
+    nonpositive_equity = nonpositive_equity
+  )
+}
+
+
+#' Calculate trading performance metrics (deprecated)
+#'
+#' @description
+#' Deprecated: use [analyze_performance()]. Kept as a thin wrapper for
+#' backward compatibility; returns the four legacy columns.
+#'
+#' @param bt Backtest results object (output from the backtest function)
+#' @param initial_equity Starting capital
+#' @param risk_free_rate Passed to \code{risk_free} in [analyze_performance()]
+#' @param start,end Optional analysis window
+#'
+#' @import data.table
+#' @export
+calculateTradeMetrics <- function(bt, initial_equity, risk_free_rate = NULL, start = NULL, end = NULL) {
+  .Deprecated("analyze_performance", msg = "calculateTradeMetrics() is deprecated; use analyze_performance().")
+  m <- analyze_performance(bt, initial_equity = initial_equity,
+                           risk_free = risk_free_rate, start = start, end = end)
+  data.table::data.table(
+    profit_factor = m$profit_factor,
+    net_profit    = m$total_pnl,
+    sharpe        = m$sharpe,
+    sortino       = m$sortino
+  )
+}
+
+getPerformanceMetrics <- function(bt, initial_equity = 10000, return_df = FALSE) {
+  .Deprecated("analyze_performance", msg = "getPerformanceMetrics() is deprecated; use analyze_performance().")
+  m <- analyze_performance(bt, initial_equity = initial_equity)
+  if (return_df) return(as.data.frame(m))
+  print(m)
+  invisible(m)
+}

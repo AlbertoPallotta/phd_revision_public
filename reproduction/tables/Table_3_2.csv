@@ -1,0 +1,9 @@
+Example,Indicators and entry,Exit or sizing rule
+Long-only mean reversion,"BBands20, width 2; next-open market entry",Full signal exit above upper band; size +200
+Long/short mean reversion,Symmetric band-cross conditions; market entries,Opposite-band signal exits; sizes ±200; no automatic reversal
+EMA limit entries,EMA20 condition; previous-low buy or previous-high sell limit,Band exits; long fixed stop only; sizes ±200
+Short stop bracket,Previous lower-band stop; size −200,Fixed ±2000 nominal budgets; candle parameter 5
+Multiple exits,Lower-band long limit; size +200,Fixed ±4000 nominal budgets; candle parameter 10; upper-band signal
+Updating target and stop,"BBands20, width 2.5; lower-band long limit",Upper-band target; previous low − 0.8 ATR14; fixed stop budget 2000
+Staged liquidation,"BBands20, width 1.5; lower-band long limit",50% middle-band target; all-remaining upper target; fixed and dynamic stops
+State-dependent sizing,Band crosses with RSI14 confirmation,"Base ±200, halved once if ATR14 exceeds 1.2 times five-observation mean"

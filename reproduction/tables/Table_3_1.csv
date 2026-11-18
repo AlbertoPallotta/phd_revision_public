@@ -1,0 +1,13 @@
+Component,Status,Assumption or boundary
+"Market, limit and stop entries",Implemented,Supplied quote data and bar-level opening/touch conventions; no queue or partial entry-fill model.
+Entry validity and instruction audit,Implemented,"Strategy-clock expiry, cancellation, explicit horizons and recorded nonfill outcomes."
+"Fixed, dynamic and partial exits",Implemented,Declared phase and quantity conventions; intrabar ambiguities remain possible.
+Multiple timeframes,Implemented with caller preparation,State availability and one-shot instructions must be distinguished; no universal exchange calendar.
+Position sizing,Helper and caller rules,"Notional helper supplied; ATR risk budgets, return-volatility sizing, and multiplier/rounding choices belong to the recipe."
+Spread and additional costs,Partial coverage,"Quote-based fills reflect supplied spread; the general cost model is theoretical. Commissions, impact, funding and additional slippage are not deducted."
+Equity and risk statistics,Implemented reporting,Realised P&L by default; optional external equity curve. No automatic mark-to-market account.
+Capital and margin constraints,Not implemented,"Reporting capital and entry-admission flags do not enforce solvency, margin or financing."
+Walk-forward grid selection,Implemented,"Declared windows, finite grid and objective; independent runs and explicit execution boundaries."
+Kelly and adaptive account risk,Theory or caller extension,No automatic Kelly sizing or general equity-dependent risk controller is supplied.
+Multi-instrument account and deployment,Outside the demonstrated engine,"No consolidated multi-currency ledger, live broker interface or claimed deployment platform."
+Educational effectiveness,Design rationale,Progressive examples and inspection interfaces; no measured superiority or learning-outcome claim.

@@ -1,0 +1,89 @@
+{
+  "tables": [
+    {
+      "caption": "Table 5.4 Primary walk-forward results across 24 window pairs.",
+      "rows": [
+        [
+          "Quantity",
+          "Selected IS",
+          "OOS"
+        ],
+        [
+          "Scheduled days per window",
+          "1,092",
+          "182"
+        ],
+        [
+          "Profitable windows",
+          "12 of 24",
+          "12 of 24"
+        ],
+        [
+          "Mean window P&L (USD)",
+          "−5,705.87",
+          "−10,089.16"
+        ],
+        [
+          "Mean P&L per scheduled day (USD)",
+          "−5.23",
+          "−55.43"
+        ],
+        [
+          "Pooled P&L (USD)",
+          "Not aggregated",
+          "−242,139.78"
+        ],
+        [
+          "Completed trades across test windows",
+          "Not aggregated",
+          "484"
+        ]
+      ]
+    },
+    {
+      "caption": "Table 5.5 Full-history fixed-parameter comparison with USD 100,000 reporting capital.",
+      "rows": [
+        [
+          "Quantity",
+          "Base",
+          "SMA200 filter"
+        ],
+        [
+          "Completed trades",
+          "660",
+          "443"
+        ],
+        [
+          "Realised P&L (USD)",
+          "59,411.54",
+          "−274,357.59"
+        ],
+        [
+          "Winning trades (%)",
+          "37.88",
+          "38.15"
+        ],
+        [
+          "Profit factor",
+          "1.0207",
+          "0.8700"
+        ],
+        [
+          "Maximum realised-equity drawdown (%)",
+          "−109.17",
+          "−255.61"
+        ],
+        [
+          "Zero or negative realised equity reached",
+          "Yes",
+          "Yes"
+        ],
+        [
+          "CAGR, annualised volatility, Sharpe and Sortino",
+          "Unavailable",
+          "Unavailable"
+        ]
+      ]
+    }
+  ]
+}

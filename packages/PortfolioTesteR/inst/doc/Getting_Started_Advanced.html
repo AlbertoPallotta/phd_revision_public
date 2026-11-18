@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>ML Strategies with PortfolioTesteR (Advanced Getting Started)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ML Strategies with PortfolioTesteR
+(Advanced Getting Started)</h1>
+
+
+
+<div id="why-ml-in-portfoliotester" class="section level1">
+<h1>Why ML in <em>PortfolioTesteR</em></h1>
+<p>PortfolioTesteR lets you test <strong>ML-based stock
+selection</strong> with the same workflow you already know:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Prepare</strong> lagged, leakage-safe features + future
+labels<br />
+</li>
+<li><strong>Fit -&gt; Predict</strong> on a <strong>rolling IS/OOS
+schedule</strong><br />
+</li>
+<li><strong>Transform -&gt; Select -&gt; Weight</strong> the
+scores<br />
+</li>
+<li><strong>Backtest</strong> and <strong>inspect
+diagnostics</strong></li>
+</ol>
+<p>All examples use the bundled weekly/daily datasets; no internet is
+required.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(PortfolioTesteR))</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(data.table))</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Bundled sample data</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">data</span>(sample_prices_weekly)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">data</span>(sample_prices_daily)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Optional peek</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">head</span>(sample_prices_weekly[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; Key: &lt;Date&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;          Date     AAPL    AMZN       BA      BAC      CAT</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;        &lt;Date&gt;    &lt;num&gt;   &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 1: 2017-01-06 27.23376 39.7995 147.5085 18.70115 76.05074</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 2: 2017-01-13 27.49475 40.8570 147.2582 18.97326 77.22778</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 3: 2017-01-20 27.71648 40.4165 147.9072 18.66817 77.95100</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 4: 2017-01-27 28.16688 41.7885 155.4819 19.26185 81.58563</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 5: 2017-02-03 29.81370 40.5100 150.5680 19.20414 76.87957</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 6: 2017-02-10 30.64816 41.3730 155.4447 19.03097 79.37682</span></span></code></pre></div>
+<hr />
+</div>
+<div id="baseline-ml-pooled-ridge-or-linear-regression" class="section level1">
+<h1>1) Baseline ML (pooled): Ridge or linear regression</h1>
+<p>Simple pooled regression on tabular features. Ridge is used when
+<code>glmnet</code> is available; otherwise the baseline uses linear
+regression. The helpers build lagged features and future labels (4-week
+horizon).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Prepare tabular features and labels</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">ml_prepare_features</span>(sample_prices_weekly, sample_prices_daily)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">make_labels</span>(sample_prices_weekly, <span class="at">horizon =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">type =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Select one available baseline and reuse it throughout the vignette.</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>baseline_type <span class="ot">&lt;-</span> <span class="cf">if</span> (has_ridge) <span class="st">&quot;ridge&quot;</span> <span class="cf">else</span> <span class="st">&quot;linear&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>baseline_label <span class="ot">&lt;-</span> <span class="cf">if</span> (has_ridge) <span class="st">&quot;Ridge&quot;</span> <span class="cf">else</span> <span class="st">&quot;Linear&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">ml_make_model</span>(baseline_type)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Actual baseline:&quot;</span>, baseline_label, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; Actual baseline: Linear</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>res_baseline <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">fit_fn  =</span> baseline<span class="sc">$</span>fit,</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="at">predict_fn =</span> baseline<span class="sc">$</span>predict,</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),  <span class="co"># 2y IS, 1m OOS, monthly step</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,                              <span class="co"># IS-only scaling (no leakage)</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;rank&quot;</span>),</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">sprintf</span>(<span class="st">&quot;Baseline %s (pooled)&quot;</span>, baseline_label)</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>)</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="fu">print</span>(res_baseline<span class="sc">$</span>backtest)</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; Backtest Result:  Baseline Linear (pooled) </span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; =====================================</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; Warmup Period: 104 observations (no trading)</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; Active Period: 2018-12-31 to 2019-12-31 (54 observations)</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; Initial Capital: $1e+05</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; Final Value: $135,986</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; Total Return (active period): 35.99%</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; Total Return (full period): 35.99%</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; Transactions: 786</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; Annualisation window: 2018-12-31 to 2019-12-31 (0.999316 elapsed years; days/365.25)</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt; Volatility scaling: 53.036301 intervals/year (observed intervals / elapsed years); unequal intervals: approximation</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt; Annualized Return: 36.01%</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt; Annualized Volatility: 11.77%</span></span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt; Sharpe Ratio (CAGR / volatility, zero risk-free rate): 3.06</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt; Max Drawdown: -5.76%</span></span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="fu">plot</span>(res_baseline<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<hr />
+</div>
+<div id="ensemble-of-available-learners" class="section level1">
+<h1>2) Ensemble of available learners</h1>
+<p>This section is <strong>optional</strong>. It combines the selected
+baseline with random forest and/or XGBoost when their packages are
+installed. The output names the learners actually used.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Start with the same available baseline used above.</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(baseline)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>learner_labels <span class="ot">&lt;-</span> baseline_label</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># Add RF only if ranger is installed</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="cf">if</span> (has_rf) {</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  learner_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(learner_labels, <span class="st">&quot;RF&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  models <span class="ot">&lt;-</span> <span class="fu">c</span>(models, <span class="fu">list</span>(<span class="fu">ml_make_model</span>(<span class="st">&quot;rf&quot;</span>, <span class="at">num.trees =</span> <span class="cf">if</span> (heavy) <span class="dv">400</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">200</span><span class="dt">L</span>, <span class="at">mtry =</span> <span class="dv">3</span><span class="dt">L</span>)))</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>}</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co"># Add XGBoost only if xgboost is installed</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="cf">if</span> (has_xgb) {</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  learner_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(learner_labels, <span class="st">&quot;XGBoost&quot;</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  models <span class="ot">&lt;-</span> <span class="fu">c</span>(models, <span class="fu">list</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="fu">ml_make_model</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>      <span class="st">&quot;xgboost&quot;</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>      <span class="at">params  =</span> <span class="fu">list</span>(<span class="at">objective =</span> <span class="st">&quot;reg:squarederror&quot;</span>, <span class="at">max_depth =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">eta =</span> <span class="fl">0.07</span>),</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>      <span class="at">nrounds =</span> <span class="cf">if</span> (heavy) <span class="dv">300</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">150</span><span class="dt">L</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    )</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  ))</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>}</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># Build the ensemble from whatever is available</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>ens <span class="ot">&lt;-</span> <span class="fu">do.call</span>(ml_make_ensemble, models)</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>res_ens <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  <span class="at">fit_fn =</span> ens<span class="sc">$</span>fit, <span class="at">predict_fn =</span> ens<span class="sc">$</span>predict,</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;rank&quot;</span>),</span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">sprintf</span>(<span class="st">&quot;Ensemble (%s)&quot;</span>, <span class="fu">paste</span>(learner_labels, <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>))</span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a>)</span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="fu">print</span>(res_ens<span class="sc">$</span>backtest)</span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="fu">plot</span>(res_ens<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="sector-neutral-modelling-tabular-xgboost-per-group" class="section level1">
+<h1>3) Sector-neutral modelling (tabular XGBoost, per-group)</h1>
+<p>This section is <strong>optional</strong> and runs only if
+<code>xgboost</code> is installed.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>symbols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(sample_prices_weekly), <span class="st">&quot;Date&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>gmap    <span class="ot">&lt;-</span> <span class="fu">demo_sector_map</span>(symbols, <span class="at">n_groups =</span> <span class="dv">4</span><span class="dt">L</span>)  <span class="co"># demo mapping for the sample data</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>xgb_g <span class="ot">&lt;-</span> <span class="fu">ml_make_model</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="st">&quot;xgboost&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">params  =</span> <span class="fu">list</span>(<span class="at">objective =</span> <span class="st">&quot;reg:squarederror&quot;</span>, <span class="at">max_depth =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">eta =</span> <span class="fl">0.05</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">nrounds =</span> <span class="cf">if</span> (heavy) <span class="dv">250</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">150</span><span class="dt">L</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>res_xgb_sect <span class="ot">&lt;-</span> <span class="fu">ml_backtest</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">features_list =</span> X, <span class="at">labels =</span> Y,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">fit_fn =</span> xgb_g<span class="sc">$</span>fit, <span class="at">predict_fn =</span> xgb_g<span class="sc">$</span>predict,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">group =</span> <span class="st">&quot;per_group&quot;</span>, <span class="at">group_map =</span> gmap,   <span class="co"># sector-neutral training</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  <span class="at">selection =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">15</span><span class="dt">L</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="at">weighting =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;XGBoost (per-sector neutral)&quot;</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>)</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="fu">print</span>(res_xgb_sect<span class="sc">$</span>backtest)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="fu">plot</span>(res_xgb_sect<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="sequence-model-gru-pooled-returns-pyramid" class="section level1">
+<h1>4) Sequence model (GRU, pooled): “returns pyramid”</h1>
+<p><strong>Optional</strong> and disabled by default. Enable locally by
+running <code>Sys.setenv(RUN_SEQ = &quot;true&quot;)</code> before knitting, and
+only if your installation supports sequence models.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">tf_autograph_scope</span>()  <span class="co"># isolate TF Autograph cache to avoid detritus </span><span class="al">NOTE</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Build a compact &#39;returns pyramid&#39; of momentum-like sequences (lagged)</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>r1  <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly,  <span class="dv">1</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>r4  <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly,  <span class="dv">4</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>r12 <span class="ot">&lt;-</span> <span class="fu">panel_lag</span>(<span class="fu">calc_momentum</span>(sample_prices_weekly, <span class="dv">12</span><span class="dt">L</span>), <span class="dv">1</span><span class="dt">L</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>features_seq <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">r1 =</span> r1, <span class="at">r4 =</span> r4, <span class="at">r12 =</span> r12)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>Y_seq <span class="ot">&lt;-</span> <span class="fu">make_labels</span>(sample_prices_weekly, <span class="at">horizon =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">type =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>units  <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">32</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">8</span><span class="dt">L</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>epochs <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">12</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">4</span><span class="dt">L</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>seq_gru <span class="ot">&lt;-</span> <span class="fu">ml_make_seq_model</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="st">&quot;gru&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">steps  =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="at">units  =</span> units,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="at">epochs =</span> epochs,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="at">seed   =</span> <span class="dv">42</span><span class="dt">L</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>res_seq_gru <span class="ot">&lt;-</span> <span class="fu">ml_backtest_seq</span>(</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="at">features_list   =</span> features_seq,</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="at">labels          =</span> Y_seq,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="at">steps           =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="at">horizon         =</span> <span class="dv">4</span><span class="dt">L</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="at">fit_fn          =</span> seq_gru<span class="sc">$</span>fit,</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  <span class="at">predict_fn      =</span> seq_gru<span class="sc">$</span>predict,</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  <span class="at">schedule        =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>  <span class="at">group           =</span> <span class="st">&quot;pooled&quot;</span>,</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>  <span class="at">normalize       =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>  <span class="at">selection       =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">10</span><span class="dt">L</span>),</span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>  <span class="at">weighting       =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>  <span class="at">prices          =</span> sample_prices_weekly,</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>  <span class="at">name            =</span> <span class="fu">sprintf</span>(<span class="st">&quot;Seq-%s (pooled): returns pyramid (26x3)&quot;</span>, <span class="fu">toupper</span>(seq_gru<span class="sc">$</span>actual_type))</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>)</span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="fu">print</span>(res_seq_gru<span class="sc">$</span>backtest)</span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="fu">plot</span>(res_seq_gru<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="sequence-model-gru-per-group-sector-neutral-sequences" class="section level1">
+<h1>5) Sequence model (GRU, per-group): sector-neutral sequences</h1>
+<p><strong>Optional</strong> and disabled by default. Enable with
+<code>RUN_SEQ=&quot;true&quot;</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tf_autograph_scope</span>()  <span class="co"># isolate TF Autograph cache for this chunk too</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>symbols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(sample_prices_weekly), <span class="st">&quot;Date&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>gmap    <span class="ot">&lt;-</span> <span class="fu">demo_sector_map</span>(symbols, <span class="at">n_groups =</span> <span class="dv">4</span><span class="dt">L</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>units_g  <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">32</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">8</span><span class="dt">L</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>epochs_g <span class="ot">&lt;-</span> <span class="cf">if</span> (heavy) <span class="dv">12</span><span class="dt">L</span> <span class="cf">else</span> <span class="dv">4</span><span class="dt">L</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>seq_gru_g <span class="ot">&lt;-</span> <span class="fu">ml_make_seq_model</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="st">&quot;gru&quot;</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="at">steps  =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="at">units  =</span> units_g,</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="at">epochs =</span> epochs_g,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">seed   =</span> <span class="dv">123</span><span class="dt">L</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>res_seq_gru_g <span class="ot">&lt;-</span> <span class="fu">ml_backtest_seq</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="at">features_list   =</span> features_seq,</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="at">labels          =</span> Y_seq,</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>  <span class="at">steps           =</span> <span class="dv">26</span><span class="dt">L</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  <span class="at">horizon         =</span> <span class="dv">4</span><span class="dt">L</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="at">fit_fn          =</span> seq_gru_g<span class="sc">$</span>fit,</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="at">predict_fn      =</span> seq_gru_g<span class="sc">$</span>predict,</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>  <span class="at">schedule        =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>  <span class="at">group           =</span> <span class="st">&quot;per_group&quot;</span>, <span class="at">group_map =</span> gmap,</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>  <span class="at">normalize       =</span> <span class="st">&quot;zscore&quot;</span>,</span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>  <span class="at">selection       =</span> <span class="fu">list</span>(<span class="at">top_k =</span> <span class="dv">10</span><span class="dt">L</span>),</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>  <span class="at">weighting       =</span> <span class="fu">list</span>(<span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>, <span class="at">temperature =</span> <span class="dv">12</span>),</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>  <span class="at">prices          =</span> sample_prices_weekly,</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>  <span class="at">initial_capital =</span> <span class="fl">1e5</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>  <span class="at">name            =</span> <span class="fu">sprintf</span>(<span class="st">&quot;Seq-%s (per-sector neutral): returns pyramid (26x3)&quot;</span>, <span class="fu">toupper</span>(seq_gru_g<span class="sc">$</span>actual_type))</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>)</span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="fu">print</span>(res_seq_gru_g<span class="sc">$</span>backtest)</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="fu">plot</span>(res_seq_gru_g<span class="sc">$</span>backtest, <span class="at">type =</span> <span class="st">&quot;performance&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="light-tuning-top-k-and-softmax-temperature" class="section level1">
+<h1>6) Light tuning: Top-K and softmax temperature</h1>
+<p>Runs only off-CRAN (when <code>NOT_CRAN=true</code>).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>topk_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span><span class="dt">L</span>, <span class="dv">10</span><span class="dt">L</span>, <span class="dv">12</span><span class="dt">L</span>, <span class="dv">15</span><span class="dt">L</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>temp_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">16</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>score_tbl <span class="ot">&lt;-</span> <span class="fu">tune_ml_backtest</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">features_list =</span> X, <span class="at">labels =</span> Y, <span class="at">prices =</span> sample_prices_weekly,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">fit_fn =</span> baseline<span class="sc">$</span>fit, <span class="at">predict_fn =</span> baseline<span class="sc">$</span>predict,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">schedule =</span> <span class="fu">list</span>(<span class="at">is =</span> <span class="dv">104</span><span class="dt">L</span>, <span class="at">oos =</span> <span class="dv">4</span><span class="dt">L</span>, <span class="at">step =</span> <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">grid =</span> <span class="fu">list</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>        <span class="at">top_k =</span> topk_vals,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>        <span class="at">temperature =</span> temp_vals,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;softmax&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>        <span class="at">transform =</span> <span class="st">&quot;zscore&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>    )</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>score_tbl[<span class="fu">order</span>(<span class="sc">-</span>sharpe)][<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<hr />
+</div>
+<div id="recap-next-steps" class="section level1">
+<h1>Recap &amp; Next Steps</h1>
+<ul>
+<li>You saw <strong>pooled</strong> vs <strong>per-group
+(sector-neutral)</strong> training,<br />
+</li>
+<li><strong>Tabular</strong> vs <strong>sequence</strong> learners,
+and<br />
+</li>
+<li>A small <strong>tuning</strong> exercise reusing the same IS/OOS
+schedule.</li>
+</ul>
+<p><strong>Try next:</strong><br />
+1) Replace GRU with LSTM/CNN1D if available (still gated by
+<code>RUN_SEQ</code>).<br />
+2) Blend tabular and sequence scores (e.g., average ranks) before
+weighting.<br />
+3) Add exposure caps or per-sector position limits when selecting
+Top-K.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; R version 4.6.1 (2026-06-24 ucrt)</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Running under: Windows 11 x64 (build 26300)</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;   LAPACK version 3.12.1</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; [1] C</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; system code page: 65001</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; time zone: Europe/London</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; [1] data.table_1.18.6.1        PortfolioTesteR_0.1.4.9008</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co">#&gt;  [1] digest_0.6.39   xts_0.14.3      R6_2.6.1        fastmap_1.2.0  </span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a><span class="co">#&gt;  [5] xfun_0.60       lattice_0.22-9  TTR_0.24.4      zoo_1.9-0      </span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="co">#&gt;  [9] cachem_1.1.0    knitr_1.52      htmltools_0.5.9 rmarkdown_2.32 </span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="co">#&gt; [13] lifecycle_1.0.5 cli_3.6.6       grid_4.6.1      sass_0.4.10    </span></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="co">#&gt; [17] jquerylib_0.1.4 compiler_4.6.1  tools_4.6.1     curl_8.0.0     </span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="co">#&gt; [21] evaluate_1.0.5  bslib_0.12.0    yaml_2.3.12     otel_0.2.0     </span></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a><span class="co">#&gt; [25] rlang_1.3.0     jsonlite_2.0.0</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
